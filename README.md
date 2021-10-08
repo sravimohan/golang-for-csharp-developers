@@ -1,4 +1,4 @@
-# golang-for-csharp-developers
+# Golang for C# Developers
 
 This repository is the accompanying code for the tutorial series, golang for c# developers in youtube.
 
