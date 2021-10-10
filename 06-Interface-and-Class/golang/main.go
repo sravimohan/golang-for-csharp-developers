@@ -6,15 +6,15 @@ import (
 )
 
 type Animal interface {
-	getName() string
-	speak() string
+	GetName() string
+	Speak() string
 }
 
 type Description struct {
 	Name string
 }
 
-func (a Description) getName() string {
+func (a Description) GetName() string {
 	return a.Name
 }
 
@@ -23,7 +23,7 @@ type Dog struct {
 	Description
 }
 
-func (a *Dog) speak() string {
+func (a *Dog) Speak() string {
 	return "bark"
 }
 
@@ -32,20 +32,23 @@ type Cat struct {
 	Description
 }
 
-func (c *Cat) speak() string {
+func (c *Cat) Speak() string {
 	return "meow"
 }
 
 func getSound(animal Animal) {
-	fmt.Println(animal.speak())
+	fmt.Println(animal.Speak())
 }
 
 func main() {
-	var rover = Dog{Description: Description{Name: "rower"}}
-	var tubby = Cat{Description: Description{Name: "tubby"}}
+	rover := Dog{}
+	rover.Name = "rover"
+
+	tubby := Cat{}
+	tubby.Name = "tubby"
 
 	var animals = [2]Animal{&rover, &tubby}
 	for _, a := range animals {
-		fmt.Printf("%s the %s says %s\n", a.getName(), reflect.TypeOf(a), a.speak())
+		fmt.Printf("%s the %s says %s\n", a.GetName(), reflect.TypeOf(a), a.Speak())
 	}
 }
