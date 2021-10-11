@@ -42,7 +42,6 @@ func main() {
 	tubby.Name = "tubby"
 
 	animals := [2]Animal{&rover, &tubby}
-
 	for _, a := range animals {
 		fmt.Printf("%s the %s says %s\n", a.GetName(), reflect.TypeOf(a), a.Speak())
 	}
