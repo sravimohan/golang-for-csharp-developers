@@ -9,31 +9,30 @@ func main() {
 	defer CleanUp()
 	defer RecoverFromPanic()
 
-	var x float32
-	var y float32
+	var x, y float32
 
-	fmt.Print("Enter x:")
+	fmt.Println("Enter x:")
 	fmt.Scanln(&x)
 
-	fmt.Print("Enter y:")
+	fmt.Println("Enter y:")
 	fmt.Scanln(&y)
 
 	answer, divideError := Divide(x, y)
-
-	if divideError == nil {
-		fmt.Println(x, "/", y, "=", answer)
-	} else {
+	if divideError != nil {
 		fmt.Println(divideError.Error())
+	} else {
+		fmt.Println("with error handling: ", x, "/", y, "=", answer)
 	}
 
 	answer = DivideWithPanic(x, y)
+	fmt.Println("with panic : ", x, "/", y, "=", answer)
 }
 
-var DivideByZero = errors.New("Cannot divide by Zero")
+var DivideByZeroError = errors.New("Cannot Divide by Zero")
 
 func Divide(x float32, y float32) (float32, error) {
 	if y == 0 {
-		return 0, DivideByZero
+		return 0, DivideByZeroError
 	}
 
 	return x / y, nil
@@ -41,19 +40,19 @@ func Divide(x float32, y float32) (float32, error) {
 
 func DivideWithPanic(x float32, y float32) float32 {
 	if y == 0 {
-		panic("DivideWithPanic() y is zero")
+		panic("DivideWithPanic")
 	}
 
 	return x / y
 }
 
-func CleanUp() {
-	fmt.Println("Cleaning Up")
-}
-
 func RecoverFromPanic() {
 	p := recover()
 	if p != nil {
-		fmt.Println("main(): recover", p)
+		fmt.Println("recovering from panic")
 	}
+}
+
+func CleanUp() {
+	fmt.Println("cleaning up")
 }
