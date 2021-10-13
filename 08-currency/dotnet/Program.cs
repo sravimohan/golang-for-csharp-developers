@@ -1,30 +1,47 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace dotnet
 {
     class Program
     {
+        static HttpClient httpClient = new HttpClient();
+
         static void Main(string[] args)
         {
-            var task1 = Task.Run(() =>
+            var apis = new string[]
             {
-                Work("Task 1", 2);
-            });
+                "https://management.azure.com",
+                "https://dev.azure.com",
+                "https://api.github.com",
+                "https://outlook.office.com/",
+                "https://api.somewhereintheinternet.com/",
+                "https://graph.microsoft.com",
+            };
 
-            var task2 = Task.Run(() =>
+            var tasks = new List<Task>();
+            foreach (var api in apis)
             {
-                Work("Task 2", 1);
-            });
+                tasks.Add(CheckApiAsync(api));
+            }
 
-            Task.WaitAll(task1, task2);
+            Task.WaitAll(tasks.ToArray());
         }
 
-        private static void Work(string name, int sleep)
+        private static async Task CheckApiAsync(string api)
         {
-            Thread.Sleep(sleep);
-            Console.WriteLine($"{name} completed");
+            try
+            {
+                Console.WriteLine($"Checking::{api}");
+                await httpClient.GetAsync(api);
+                Console.WriteLine($"OK::{api}");
+            }
+            catch (HttpRequestException)
+            {
+                Console.WriteLine($"BAD::{api}");
+            }
         }
     }
 }

@@ -2,29 +2,49 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"sync"
-	"time"
 )
 
+// "Do not communicate by sharing memory; instead, share memory by communicating."
+
 func main() {
+	apis := []string{
+		"https://management.azure.com",
+		"https://dev.azure.com",
+		"https://api.github.com",
+		"https://outlook.office.com/",
+		"https://api.somewhereintheinternet.com/",
+		"https://graph.microsoft.com",
+	}
+
+	ch := make(chan string)
+	defer close(ch)
+
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(len(apis))
 
-	go func() {
-		Work("Task 1", 2)
-		wg.Done()
-	}()
+	for _, api := range apis {
+		apiToCheck := api
+		go func() {
+			checkApi(apiToCheck, ch)
+			wg.Done()
+		}()
+	}
 
-	go func() {
-		Work("Task 2", 1)
-		wg.Done()
-	}()
+	for i := 0; i < len(apis)*2; i++ {
+		fmt.Println(<-ch)
+	}
 
 	wg.Wait()
-	fmt.Println("Done")
 }
 
-func Work(name string, sleep time.Duration) {
-	time.Sleep(sleep * time.Second)
-	fmt.Println(name, "completed")
+func checkApi(api string, ch chan string) {
+	ch <- fmt.Sprintf("Checking:%s", api)
+	_, err := http.Get(api)
+	if err == nil {
+		ch <- fmt.Sprintf("OK:%s", api)
+	} else {
+		ch <- fmt.Sprintf("BAD:%s", api)
+	}
 }
