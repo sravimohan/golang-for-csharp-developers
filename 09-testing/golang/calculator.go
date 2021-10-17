@@ -14,13 +14,13 @@ func (c *Calculator) Add(a int, b int) int {
 }
 
 func (c *Calculator) Subtract(a int, b int) int {
-	return a + b
+	return a - b
 }
 
 func (c *Calculator) Multiply(a int, b int) int {
-	return a + b
+	return a * b
 }
 
 func (c *Calculator) Divide(a int, b int) int {
-	return a + b
+	return a / b
 }
