@@ -1,19 +1,17 @@
 package main
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestAdd(t *testing.T) {
 	a := 10
 	b := 2
 	expected := 12
 
-	c := Calculator{}
-	actual := c.Add(a, b)
+	var cs CalculatorService = new(Calculator)
+	actual := cs.Add(a, b)
 
 	if expected != actual {
-		t.Errorf("Add was incorrect, expected: %d, expected: %d.", expected, actual)
+		t.Errorf("Add was incorrect. expected %d; actual: %d", expected, actual)
 	}
 }
 
@@ -22,24 +20,11 @@ func TestSubtract(t *testing.T) {
 	b := 2
 	expected := 8
 
-	c := Calculator{}
-	actual := c.Subtract(a, b)
+	var cs CalculatorService = new(Calculator)
+	actual := cs.Subtract(a, b)
 
 	if expected != actual {
-		t.Errorf("Subtract was incorrect, expected: %d, expected: %d.", expected, actual)
-	}
-}
-
-func TestMultiply(t *testing.T) {
-	a := 10
-	b := 2
-	expected := 20
-
-	c := Calculator{}
-	actual := c.Multiply(a, b)
-
-	if expected != actual {
-		t.Errorf("Multiply was incorrect, expected: %d, expected: %d.", expected, actual)
+		t.Errorf("Subtract was incorrect. expected %d; actual: %d", expected, actual)
 	}
 }
 
@@ -48,10 +33,23 @@ func TestDivide(t *testing.T) {
 	b := 2
 	expected := 5
 
-	c := Calculator{}
-	actual := c.Divide(a, b)
+	var cs CalculatorService = new(Calculator)
+	actual := cs.Divide(a, b)
 
 	if expected != actual {
-		t.Errorf("Divide was incorrect, expected: %d, expected: %d.", expected, actual)
+		t.Errorf("Divide was incorrect. expected %d; actual: %d", expected, actual)
+	}
+}
+
+func TestMultiply(t *testing.T) {
+	a := 10
+	b := 2
+	expected := 20
+
+	var cs CalculatorService = new(Calculator)
+	actual := cs.Multiply(a, b)
+
+	if expected != actual {
+		t.Errorf("Multiply was incorrect. expected %d; actual: %d", expected, actual)
 	}
 }
