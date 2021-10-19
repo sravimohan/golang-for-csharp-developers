@@ -1,0 +1,2 @@
+main():logWithBuiltInLoggerToFile()2021/10/20 07:38:43 main.go:41: HHey, I'm using File!
+main():logWithBuiltInLoggerToFile():2021/10/20 07:39:03 main.go:41: HHey, I'm using File!
