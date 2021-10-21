@@ -1,0 +1,6 @@
+main() : 2021/10/20 08:07:17 main.go:20: Hello World!
+main() : 2021/10/20 08:07:32 main.go:20: Hello World!
+main() : 2021/10/20 08:08:29 main.go:22: Hello World!
+main() : 2021/10/20 08:08:53 main.go:23: Hello World!
+logToFile() : 2021/10/22 06:46:55 main.go:31: Hello World 1!
+logToFile() : 2021/10/22 06:46:55 main.go:32: Hello World 2!

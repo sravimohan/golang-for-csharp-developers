@@ -7,36 +7,42 @@ import (
 	"go.uber.org/zap"
 )
 
-var logger *zap.Logger
-
 func main() {
-	logWithBuiltInLoggerToConsole()
-	logWithBuiltInLoggerToFile()
+	logToConsole()
+	logToFile()
 	logWithZap()
 }
 
-func logWithZap() {
-	logger, _ = zap.NewProduction()
-	defer logger.Sync()
-	logger.Info("Hey, I'm using Zap!")
-}
-
-func logWithBuiltInLoggerToConsole() {
-	log.SetPrefix("main():logWithBuiltInLoggerToConsole():")
+func logToConsole() {
+	log.SetPrefix("logToConsole() : ")
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	log.Print("Hey, I'm using Console!")
-	//log.Fatal("Hey, I'm using Fatal!") // ends program
-	//log.Panic("Hey, I'm using Panic!") // ends program
+	log.Println("Hello World 1!")
+	// log.Fatal("I am Fatal") // program will end with this line
+	// log.Panic("I am Panic") // program will end with this line with additional context
+	log.Println("Hello World 2!")
 }
 
-func logWithBuiltInLoggerToFile() {
-	file, err := os.OpenFile("info.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+func logToFile() {
+	file, err := os.OpenFile("main.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("cannot open log file")
 	}
+
 	defer file.Close()
+
 	log.SetOutput(file)
-	log.SetPrefix("main():logWithBuiltInLoggerToFile():")
+	log.SetPrefix("logToFile() : ")
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	log.Print("HHey, I'm using File!")
+	log.Println("Hello World 1!")
+	log.Println("Hello World 2!")
+}
+
+func logWithZap() {
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatal("cannot init Zap")
+	}
+
+	defer logger.Sync()
+	logger.Info("Info from Zap")
 }
