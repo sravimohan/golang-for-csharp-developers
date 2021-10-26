@@ -16,16 +16,16 @@ func getAllHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
-	weatherForecast := WeatherForecast{}
+	temp := WeatherForecast{}
 
-	if err := json.NewDecoder(r.Body).Decode(&weatherForecast); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&temp); err != nil {
 		fmt.Println(err)
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	weatherForecast.setTemperatureF()
-	weatherForecasts = append(weatherForecasts, weatherForecast)
+	weatherForecast := NewWeatherForecast(temp.Date, temp.TemperatureC, temp.Summary)
+	weatherForecasts = append(weatherForecasts, *weatherForecast)
 
 	response, err := json.Marshal(&weatherForecasts)
 	if err != nil {
