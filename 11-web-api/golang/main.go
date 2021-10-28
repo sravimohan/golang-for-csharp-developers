@@ -12,7 +12,26 @@ import (
 
 func getAllHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
-	json.NewEncoder(w).Encode(weatherForecasts)
+
+	list := make([]WeatherForecast, 0, len(weatherForecasts))
+	for _, value := range weatherForecasts {
+		list = append(list, value)
+	}
+
+	json.NewEncoder(w).Encode(list)
+}
+
+func getByDateHandler(w http.ResponseWriter, r *http.Request) {
+	date := mux.Vars(r)["date"]
+	weatherForecast, found := weatherForecasts[date]
+
+	if found {
+		w.Header().Set("content-type", "application/json")
+		json.NewEncoder(w).Encode(weatherForecast)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +44,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	weatherForecast := NewWeatherForecast(temp.Date, temp.TemperatureC, temp.Summary)
-	weatherForecasts = append(weatherForecasts, *weatherForecast)
+	weatherForecasts[temp.Date] = *weatherForecast
 
 	response, err := json.Marshal(&weatherForecasts)
 	if err != nil {
@@ -39,18 +58,19 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-var weatherForecasts = []WeatherForecast{}
+var weatherForecasts map[string]WeatherForecast = make(map[string]WeatherForecast)
 
 func main() {
 	setupMockData()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", getAllHandler).Methods(http.MethodGet)
+	router.HandleFunc("/{date}", getByDateHandler).Methods(http.MethodGet)
 	router.HandleFunc("/", postHandler).Methods(http.MethodPost)
 
 	fmt.Println("Http Listening at port localhost:8080")
 	http.Handle("/", router)
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8081", router)
 }
 
 func setupMockData() {
@@ -58,15 +78,11 @@ func setupMockData() {
 		"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"}
 
 	for i := 0; i < 6; i++ {
-		d := dateOnly(time.Now().AddDate(0, 0, i))
+		d := time.Now().AddDate(0, 0, i).Format("2006-01-02")
 		c := getRandomTemp()
 		w := NewWeatherForecast(d, c, summaries[i])
-		weatherForecasts = append(weatherForecasts, *w)
+		weatherForecasts[d] = *w
 	}
-}
-
-func dateOnly(t time.Time) time.Time {
-	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.Local)
 }
 
 func getRandomTemp() int {
