@@ -45,12 +45,17 @@ public class WeatherForecastController : ControllerBase
     public ActionResult<WeatherForecast> GetByDate(string date)
     {
         var found = _weatherForecast.TryGetValue(date, out var weatherforecast);
-        return found ? weatherforecast : NotFound();
+        return found && weatherforecast != null ? weatherforecast : NotFound();
     }
 
     [HttpPost]
     public ActionResult<WeatherForecast> Post(WeatherForecast weatherForecast)
     {
+        if (weatherForecast == null || weatherForecast.Date == null)
+        {
+            return BadRequest();
+        }
+
         _weatherForecast[weatherForecast.Date] = weatherForecast;
         return CreatedAtAction(nameof(Get), new { Date = weatherForecast.Date }, weatherForecast);
     }
